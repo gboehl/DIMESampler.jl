@@ -96,7 +96,7 @@ Finally, plot the results.
    # histogram of the actual sample
    histogram!(chain[1,:,end-Int(niter/4):end][:], normalize=true, alpha=.5, label="Sample", color="black")
 
-.. image:: https://github.com/gboehl/ADEMC.jl/blob/main/docs/figure.png?raw=true
+.. image:: https://github.com/gboehl/ADEMCSampler.jl/blob/main/docs/figure.png?raw=true
   :width: 800
   :alt: Sample and target distribution
 
