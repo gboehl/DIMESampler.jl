@@ -15,7 +15,7 @@ The sampler has a series of advantages over conventional samplers:
 Installation
 ------------
 
-As long as this is not in the official repositories, download the file `ADEMC.jl <https://github.com/gboehl/ADEMC.jl/blob/main/src/ADEMC.jl>`_ (from ``src``) and go for:
+As long as this is not in the official repositories, download the file `ADEMCSampler.jl <https://github.com/gboehl/ADEMCSampler.jl/blob/main/src/ADEMCSampler.jl>`_ (from ``src``) and go for:
 
 .. code-block:: julia
 
@@ -24,8 +24,8 @@ As long as this is not in the official repositories, download the file `ADEMC.jl
    addprocs(8) # or whatever your number of cores is
 
    # use @everywhere to ensure that the module is known to each thread
-   @everywhere push!(LOAD_PATH,<insert_path_to_ADEMC.jl>) # insert path to ADEMC.jl here!
-   @everywhere using ADEMC
+   @everywhere push!(LOAD_PATH,<insert_path_to_ADEMCSampler.jl>) # insert path to ADEMCSampler.jl here!
+   @everywhere using ADEMCSampler
 
 There exists a complementary Python implementation `here <https://github.com/gboehl/emcwrap>`_.
 
@@ -73,7 +73,7 @@ Now let the sampler run for 2000 iterations.
 
 .. code-block:: julia
 
-    chain = ADEMCSampler(LogProb, initchain, 2000, progress=true, aimh_prob=0.05)
+    chain = ADEMC(LogProb, initchain, 2000, progress=true, aimh_prob=0.05)
 
 .. code-block::
 
@@ -87,7 +87,7 @@ Finally, plot the results.
 
    # analytical marginal distribution in first dimension
    x = range(-4,4,1000)
-   mpdf = MarginalPDF(x, cov_scale, m, weight)
+   mpdf = ADEMCTest_funcMarginalPDF(x, cov_scale, m, weight)
    plot(x, mpdf, label="Target", lw=2)
 
    # a larger sample from the initial distribution
