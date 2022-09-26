@@ -19,7 +19,7 @@ initmean = zeros(ndim)
 initcov = I(ndim)*sqrt(2)
 initchain = rand(MvNormal(initmean, initcov), nchain)
 
-chain = ADEMCS(LogProb, initchain, niter, progress=true)
+chain = ADEMC(LogProb, initchain, niter, progress=true)
 
 sample = chain[1,:,end-Int(niter/4):end][:]
 
