@@ -100,7 +100,7 @@ Finally, plot the results.
   :width: 800
   :alt: Sample and target distribution
 
-Let us also have a look at the MCMC traces:
+To ensure propper mixing, let us also have a look at the MCMC traces. Chains are also switching between the two modes because of the global proposal kernel.
 
 .. code-block:: julia
     plot(chains[:,:,1], color="cyan4", alpha=.1, legend=false, size=(900,600))
@@ -109,7 +109,7 @@ Let us also have a look at the MCMC traces:
   :width: 800
   :alt: MCMC traces
 
-Finally, illustrate convergence to the posterior in terms of the log-likelhood:
+Finally, ensure convergence to the posterior by plotting the associated log-likelhood:
 
 .. code-block:: julia
     plot(lprob[:,:], color="black", alpha=.05, legend=false, size=(900,300))
