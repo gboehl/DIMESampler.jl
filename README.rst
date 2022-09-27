@@ -109,7 +109,7 @@ To ensure propper mixing, let us also have a look at the MCMC traces. Chains are
   :width: 800
   :alt: MCMC traces
 
-Finally, ensure convergence to the posterior by plotting the associated log-likelhood:
+While DIME is an MCMC sampler, it can straightforwardy be used as a global optimization routine. To this end, just let the sampler run for an extended number of iterations and then assess whether the maximum value per ensemble did not change much in the last few hundered iterations. In a normal Bayesian setup, plotting the associated log-likelhood over time also helps to assess convergence to the posterior distribution.
 
 .. code-block:: julia
     plot(lprob[:,:], color="black", alpha=.05, legend=false, size=(900,300))
