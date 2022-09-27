@@ -2,7 +2,7 @@
 
 """A sampler using adaptive differential evolution proposals.
 
-This is a standalone julia version of the `Adaptive Differential Evolution MCMC sampler` as prosed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/ademc_boehl.pdf>`_.
+This is a standalone julia version of the `Adaptive Differential Ensemble MCMC sampler` as prosed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/ademc_boehl.pdf>`_.
 """
 module DIMESampler
     
