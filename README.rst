@@ -87,7 +87,7 @@ Finally, plot the results.
 
    # analytical marginal distribution in first dimension
    x = range(-4,4,1000)
-   mpdf = DIMETest_funcMarginalPDF(x, cov_scale, m, weight)
+   mpdf = DIMETestFuncMarginalPDF(x, cov_scale, m, weight)
    plot(x, mpdf, label="Target", lw=2)
 
    # a larger sample from the initial distribution
@@ -103,7 +103,7 @@ Finally, plot the results.
 References
 ----------
 
-If you are using this software, please cite
+If you are using this software in your research, please cite
 
 .. code-block::
 
