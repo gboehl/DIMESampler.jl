@@ -1,21 +1,21 @@
-ADEMCSampler.jl
+DIMESampler.jl
 ========
 
-**Adaptive Differential Evolution MCMC sampling for Julia**
+**Differential-Independence Mixture Evolution MCMC sampling for Julia**
 
-This is a standalone Julia implementation of the sampler proposed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/ademc_boehl.pdf>`_. *(Gregor Boehl, 2022, CRC 224 discussion paper series)*.
+This is a standalone Julia implementation of the DIME sampler (previously ADEMC sampler) proposed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/ademc_boehl.pdf>`_. *(Gregor Boehl, 2022, CRC 224 discussion paper series)*.
 
 The sampler has a series of advantages over conventional samplers:
 
-#. At core, ADEMC is a (very fast) **global multi-start optimizer** that converges to the posterior distribution. This makes any posterior mode density maximization prior to MCMC sampling superfluous.
-#. ADEMC is pretty robust for odd shaped, **bimodal distributions**.
-#. ADEMC is **parallelizable**: many chains can run in parallel, and the necessary number of draws decreases almost one-to-one with the number of chains.
-#. ADEMC proposals are generated from an **endogenous and adaptive proposal distribution**, thereby reducing the number of necessary meta-parameters and providing close-to-optimal proposal distributions.
+#. At core, DIME is a (very fast) **global multi-start optimizer** that converges to the posterior distribution. This makes any posterior mode density maximization prior to MCMC sampling superfluous.
+#. DIME is pretty robust for odd shaped, **bimodal distributions**.
+#. DIME is **parallelizable**: many chains can run in parallel, and the necessary number of draws decreases almost one-to-one with the number of chains.
+#. DIME proposals are generated from an **endogenous and adaptive proposal distribution**, thereby reducing the number of necessary meta-parameters and providing close-to-optimal proposal distributions.
 
 Installation
 ------------
 
-As long as this is not in the official repositories, download the file `ADEMCSampler.jl <https://github.com/gboehl/ADEMCSampler.jl/blob/main/src/ADEMCSampler.jl>`_ (from ``src``) and go for:
+As long as this is not in the official repositories, download the file `DIMESampler.jl <https://github.com/gboehl/DIMESampler.jl/blob/main/src/DIMESampler.jl>`_ (from ``src``) and go for:
 
 .. code-block:: julia
 
@@ -24,8 +24,8 @@ As long as this is not in the official repositories, download the file `ADEMCSam
    addprocs(8) # or whatever your number of cores is
 
    # use @everywhere to ensure that the module is known to each thread
-   @everywhere push!(LOAD_PATH,<insert_path_to_ADEMCSampler.jl>) # insert path to ADEMCSampler.jl here!
-   @everywhere using ADEMCSampler
+   @everywhere push!(LOAD_PATH,<insert_path_to_DIMESampler.jl>) # insert path to DIMESampler.jl here!
+   @everywhere using DIMESampler
 
 There exists a complementary Python implementation `here <https://github.com/gboehl/emcwrap>`_.
 
@@ -48,7 +48,7 @@ Define an example distribution:
     weight = 0.33
     ndim = 35
 
-    LogProb = CreateADEMCTestFunc(ndim, weight, m, cov_scale)
+    LogProb = CreateDIMETestFunc(ndim, weight, m, cov_scale)
 
 ``LogProb`` will now return the log-PDF of a 35-dimensional bimodal Gaussian mixture. 
 **Important:** the function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. If you want to make use of parallelization (which is one of the central advantages of ensemble MCMC), you may want to ensure that this function evaluates its vectorized input in parallel, i.e.:
