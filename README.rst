@@ -100,7 +100,7 @@ Finally, plot the results.
   :width: 800
   :alt: Sample and target distribution
 
-To ensure propper mixing, let us also have a look at the MCMC traces. Chains are also switching between the two modes because of the global proposal kernel.
+To ensure propper mixing, let us also have a look at the MCMC traces. Note how chains are also switching between the two modes because of the global proposal kernel.
 
 .. code-block:: julia
     plot(chains[:,:,1], color="cyan4", alpha=.1, legend=false, size=(900,600))
