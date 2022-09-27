@@ -52,7 +52,8 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     naccepted = sum(accepted)
 
     # preallocate
-    chain = zeros((ndim, nchain, niter))
+    chains = zeros((niter, nchain, ndim))
+    lprobs = zeros((niter, nchain))
 
     # optional progress bar
     if progress
@@ -111,14 +112,15 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         # update chains
         x[:,accepted] = q[:,accepted]
         lprob[accepted] = newlprob[accepted]
-        chain[:,:,i] = x
+        chains[i,:,:] = transpose(x)
+        lprobs[i,:] = lprob
 
         if progress
             set_description(iter, string(@sprintf("[ll/MAF: %.3f(%1.0e)/%d%%]", maximum(lprob), std(lprob), 100*naccepted/nchain)))
         end
     end
 
-    return chain
+    return (chains, lprobs)
 end
 
 @doc raw"""

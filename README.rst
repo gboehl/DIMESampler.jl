@@ -73,7 +73,7 @@ Now let the sampler run for 2000 iterations.
 
 .. code-block:: julia
 
-    chain = RunDIME(LogProb, initchain, 2000, progress=true, aimh_prob=0.05)
+    chains, lprobs = RunDIME(LogProb, initchain, 2000, progress=true, aimh_prob=0.05)
 
 .. code-block::
 
@@ -94,11 +94,29 @@ Finally, plot the results.
    init = rand(MvNormal(initmean, initcov), Int(nchain*niter/4))
    histogram!(init[1,:], normalize=true, alpha=.5, label="Initialization")
    # histogram of the actual sample
-   histogram!(chain[1,:,end-Int(niter/4):end][:], normalize=true, alpha=.5, label="Sample", color="black")
+   histogram!(chains[end-Int(niter/4):end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black")
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/figure.png?raw=true
   :width: 800
   :alt: Sample and target distribution
+
+Let us also have a look at the MCMC traces:
+
+.. code-block:: julia
+    plot(chains[:,:,1], color="cyan4", alpha=.1, legend=false, size=(900,600))
+
+.. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/traces.png?raw=true
+  :width: 800
+  :alt: MCMC traces
+
+Finally, illustrate convergence to the posterior in terms of the log-likelhood:
+
+.. code-block:: julia
+    plot(lprob[:,:], color="black", alpha=.05, legend=false, size=(900,300))
+
+.. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/lprobs.png?raw=true
+  :width: 800
+  :alt: Log-likelihoods
 
 References
 ----------

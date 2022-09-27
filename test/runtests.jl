@@ -19,8 +19,8 @@ initmean = zeros(ndim)
 initcov = I(ndim)*sqrt(2)
 initchain = rand(MvNormal(initmean, initcov), nchain)
 
-chain = RunDIME(LogProb, initchain, niter, progress=true)
+chains, lprobs = RunDIME(LogProb, initchain, niter, progress=true)
 
-sample = chain[1,:,end-Int(niter/4):end][:]
+sample = chains[1,:,end-Int(niter/4):end][:]
 
 @test isapprox(median(sample), 0.8634433340817228)
