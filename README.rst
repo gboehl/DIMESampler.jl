@@ -73,7 +73,7 @@ Now let the sampler run for 2000 iterations.
 
 .. code-block:: julia
 
-    chain = ADEMC(LogProb, initchain, 2000, progress=true, aimh_prob=0.05)
+    chain = RunDIME(LogProb, initchain, 2000, progress=true, aimh_prob=0.05)
 
 .. code-block::
 
@@ -87,7 +87,7 @@ Finally, plot the results.
 
    # analytical marginal distribution in first dimension
    x = range(-4,4,1000)
-   mpdf = ADEMCTest_funcMarginalPDF(x, cov_scale, m, weight)
+   mpdf = DIMETest_funcMarginalPDF(x, cov_scale, m, weight)
    plot(x, mpdf, label="Target", lw=2)
 
    # a larger sample from the initial distribution
@@ -96,7 +96,7 @@ Finally, plot the results.
    # histogram of the actual sample
    histogram!(chain[1,:,end-Int(niter/4):end][:], normalize=true, alpha=.5, label="Sample", color="black")
 
-.. image:: https://github.com/gboehl/ADEMCSampler.jl/blob/main/docs/figure.png?raw=true
+.. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/figure.png?raw=true
   :width: 800
   :alt: Sample and target distribution
 
