@@ -1,4 +1,4 @@
-using Test, ADEMCSampler, Distributions, Random, LinearAlgebra
+using Test, DIMESampler, Distributions, Random, LinearAlgebra
 
 Random.seed!(1)
 
@@ -8,7 +8,7 @@ cov_scale = 0.05
 weight = 0.33
 ndim = 35
 
-LogProb = CreateADEMCTestFunc(ndim, weight, m, cov_scale)
+LogProb = CreateDIMETestFunc(ndim, weight, m, cov_scale)
 LogProbParallel(x) = pmap(LogProb, eachslice(x, dims=2))
 
 # for chain
@@ -19,7 +19,7 @@ initmean = zeros(ndim)
 initcov = I(ndim)*sqrt(2)
 initchain = rand(MvNormal(initmean, initcov), nchain)
 
-chain = ADEMC(LogProb, initchain, niter, progress=true)
+chain = RunDIME(LogProb, initchain, niter, progress=true)
 
 sample = chain[1,:,end-Int(niter/4):end][:]
 

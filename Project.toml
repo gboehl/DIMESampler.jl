@@ -1,4 +1,4 @@
-name = "ADEMCSampler"
+name = "DIMESampler"
 uuid = "04a434a8-c84f-441c-a70f-f662b8c4f7ef"
 authors = ["Gregor Boehl <admin@gregorboehl.com>"]
 version = "0.1.0"
