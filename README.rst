@@ -103,6 +103,8 @@ Finally, plot the results.
 References
 ----------
 
+If you are using this software, please cite
+
 .. code-block::
 
     @techreport{boehl2022mcmc,
