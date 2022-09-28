@@ -103,6 +103,7 @@ Finally, plot the marginal distribution along the first dimension (remember that
 To ensure propper mixing, let us also have a look at the MCMC traces, again focussing on the first dimension. Note how chains are also switching between the two modes because of the global proposal kernel.
 
 .. code-block:: julia
+
    plot(chains[:,:,1], color="cyan4", alpha=.1, legend=false, size=(900,600))
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/traces.png?raw=true
@@ -112,8 +113,9 @@ To ensure propper mixing, let us also have a look at the MCMC traces, again focu
 While DIME is an MCMC sampler, it can straightforwardy be used as a global optimization routine. To this end, specify some broad starting region (in a non-Bayesian setup there is no prior) and let the sampler run for an extended number of iterations. Finally, assess whether the maximum value per ensemble did not change much in the last few hundered iterations. In a normal Bayesian setup, plotting the associated log-likelhood over time also helps to assess convergence to the posterior distribution.
 
 .. code-block:: julia
+
    plot(lprob[:,:], color="orange4", alpha=.05, legend=false, size=(900,300))
-   plot!(maximum(lprob)*ones(niter), color="blue3", label="Posterior max.")
+   plot!(maximum(lprob)*ones(niter), color="blue3")
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/lprobs.png?raw=true
   :width: 800
