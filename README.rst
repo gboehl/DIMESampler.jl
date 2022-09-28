@@ -115,7 +115,7 @@ While DIME is an MCMC sampler, it can straightforwardy be used as a global optim
 .. code-block:: julia
 
    plot(lprob[:,:], color="orange4", alpha=.05, legend=false, size=(900,300))
-   plot!(maximum(lprob)*ones(niter), color="blue3", label="Posterior max.")
+   plot!(maximum(lprob)*ones(niter), color="blue3")
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/lprobs.png?raw=true
   :width: 800
