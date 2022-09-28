@@ -81,7 +81,7 @@ Now let the sampler run for 2000 iterations.
 
 The setting of ``aimh_prob`` is actually the default. For less complex distributions a higher value (e.g. ``aimh_prob=0.1`` for medium-scale DSGE models) can be chosen, which accelerates burn-in.
 
-Finally, plot the results.
+Finally, plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
 
 .. code-block:: julia
 
@@ -100,7 +100,7 @@ Finally, plot the results.
   :width: 800
   :alt: Sample and target distribution
 
-To ensure propper mixing, let us also have a look at the MCMC traces. Note how chains are also switching between the two modes because of the global proposal kernel.
+To ensure propper mixing, let us also have a look at the MCMC traces, again focussing on the first dimension. Note how chains are also switching between the two modes because of the global proposal kernel.
 
 .. code-block:: julia
     plot(chains[:,:,1], color="cyan4", alpha=.1, legend=false, size=(900,600))
