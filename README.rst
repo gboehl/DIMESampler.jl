@@ -94,7 +94,7 @@ Finally, plot the marginal distribution along the first dimension (remember that
    init = rand(MvNormal(initmean, initcov), Int(nchain*niter/4))
    histogram!(init[1,:], normalize=true, alpha=.5, label="Initialization")
    # histogram of the actual sample
-   histogram!(chains[end-Int(niter/4):end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black")
+   histogram!(chains[end-niter÷3:end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black")
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/figure.png?raw=true
   :width: 800
