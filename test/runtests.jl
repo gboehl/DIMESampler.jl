@@ -19,7 +19,7 @@ initmean = zeros(ndim)
 initcov = I(ndim)*sqrt(2)
 initchain = rand(MvNormal(initmean, initcov), nchain)
 
-chains, lprobs = RunDIME(LogProb, initchain, niter, progress=true)
+chains, lprobs, pdist = RunDIME(LogProb, initchain, niter, progress=true)
 
 sample = chains[end-Int(niter/4):end,:,1][:]
 

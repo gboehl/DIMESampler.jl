@@ -73,13 +73,13 @@ Now let the sampler run for 2000 iterations.
 
 .. code-block:: julia
 
-    chains, lprobs = RunDIME(LogProb, initchain, 2000, progress=true, aimh_prob=0.05)
+    chains, lprobs, propdist = RunDIME(LogProb, initchain, 2000, progress=true, aimh_prob=0.1)
 
 .. code-block::
 
     [ll/MAF: 12.440(4e+00)/0.21] 100.0%┣█████████████████████████████┫ 2.0k/2.0k [00:01<00:00, 1.4kit/s]
 
-The setting of ``aimh_prob`` is actually the default. For less complex distributions a higher value (e.g. ``aimh_prob=0.1`` for medium-scale DSGE models) can be chosen, which accelerates burn-in.
+The setting of ``aimh_prob`` is actually the default. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in.
 
 Finally, plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
 

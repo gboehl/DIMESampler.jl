@@ -47,6 +47,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     # preallocate
     chains = zeros((niter, nchain, ndim))
     lprobs = zeros((niter, nchain))
+    dist = nothing
 
     # optional progress bar
     if progress
@@ -114,7 +115,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         end
     end
 
-    return (chains, lprobs)
+    return chains, lprobs, dist
 end
 
 @doc raw"""
