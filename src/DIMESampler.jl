@@ -22,7 +22,7 @@ export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF
 - `aimh_prob::Float=0.05`: the probability to draw a AIMH proposal. 
 - `df_proposal_dist::Float=10`: the degrees of freedom of the multivariate t distribution used for AIMH proposals.
 """
-function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.05, df_proposal_dist::Int=10, progress::Bool=true)
+function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.1, df_proposal_dist::Int=10, progress::Bool=true)
 
     ndim, nchain = size(init)
 
