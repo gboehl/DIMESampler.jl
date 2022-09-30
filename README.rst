@@ -69,11 +69,11 @@ Next, define the initial ensemble. In a Bayesian setup, a good initial ensemble 
 
 Setting the number of parallel chains to ``5*ndim`` is a sane default. For highly irregular distributions with several modes you should use more chains. Very simple distributions can go with less. 
 
-Now let the sampler run for 2000 iterations.
+Now let the sampler run for 3000 iterations.
 
 .. code-block:: julia
 
-    chains, lprobs, propdist = RunDIME(LogProb, initchain, 2000, progress=true, aimh_prob=0.1)
+    chains, lprobs, propdist = RunDIME(LogProb, initchain, 3000, progress=true, aimh_prob=0.1)
 
 .. code-block::
 
