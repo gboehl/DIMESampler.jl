@@ -23,4 +23,5 @@ chains, lprobs, pdist = RunDIME(LogProb, initchain, niter, progress=true)
 
 sample = chains[end-Int(niter/4):end,:,1][:]
 
-@test isapprox(median(sample), 0.8724220592786383)
+tval = 0.8622139455242063
+@test isapprox(median(sample), tval)
