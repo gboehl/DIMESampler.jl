@@ -11,7 +11,7 @@ using Distributions, ProgressBars, Printf, LinearAlgebra, StatsFuns
 export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF
 
 @doc raw"""
-    DIMESampler(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.05, df_proposal_dist::Int=10, progress::Bool=true)
+    DIMESampler(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.05, nsamples_proposal_dist=nothing, df_proposal_dist::Int=10, progress::Bool=true)
 
 # Arguments
 - `lprobFunc::Function`: the likelihood function to be sampled. Expected to be vectorized.
@@ -19,10 +19,11 @@ export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF
 - `niter::Int`: the number of iterations to be run.
 - `sigma::Float=1e-5`: the standard deviation of the Gaussian used to stretch the proposal vector.
 - `gamma::Float=nothing`: the mean stretch factor for the proposal vector. By default, it is ``2.38 / \sqrt{2\,\mathrm{ndim}}`` as recommended by `ter Braak (2006) <http://www.stat.columbia.edu/~gelman/stuff_for_blog/cajo.pdf>`_.
-- `aimh_prob::Float=0.05`: the probability to draw a AIMH proposal. 
+- `aimh_prob::Float=0.1`: the probability to draw a AIMH proposal. 
+- `neff_proposal_dist::Int=nothing`: the window size used to calculate the rolling-window covariance estimate. By default this is the number of unique elements in the proposal mean and covariance ``0.5 d(d+3)``.
 - `df_proposal_dist::Float=10`: the degrees of freedom of the multivariate t distribution used for AIMH proposals.
 """
-function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.1, df_proposal_dist::Int=10, progress::Bool=true)
+function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.1, neff_prop_dist=nothing, df_proposal_dist::Int=10, progress::Bool=true)
 
     ndim, nchain = size(init)
 
@@ -35,6 +36,12 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         g0 = gamma
     end
 
+    if neff_prop_dist == nothing
+        npdist = 4*ndim*(ndim + 3)
+    else
+        npdist = neff_prop_dist
+    end
+
     # calculate intial values
     x = copy(init)
     lprob = lprobFunc(x)
@@ -42,7 +49,6 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     cmean = mean(x, dims=2)
     accepted = zeros(nchain)
     naccepted = sum(accepted)
-    npdist = nchain
 
     # preallocate
     chains = zeros((niter, nchain, ndim))
@@ -67,9 +73,8 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
             ncov = cov(transpose(xaccepted))
             nmean = mean(xaccepted, dims=2)
 
-            ccov = (npdist - 1) / (naccepted + npdist - 1) * ccov + (naccepted - 1) / (naccepted + npdist - 1) * ncov
-            cmean = npdist / (naccepted + npdist) * cmean + naccepted / (naccepted + npdist) * nmean
-            npdist += naccepted
+            ccov = (npdist - naccepted) / (npdist - 1) * ccov + (naccepted - 1) / (npdist - 1) * ncov
+            cmean = (1 - naccepted / npdist) * cmean + naccepted / npdist * nmean
         end
 
         # get differential evolution proposal
