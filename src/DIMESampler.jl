@@ -20,7 +20,7 @@ export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF
 - `sigma::Float=1e-5`: the standard deviation of the Gaussian used to stretch the proposal vector.
 - `gamma::Float=nothing`: the mean stretch factor for the proposal vector. By default, it is ``2.38 / \sqrt{2\,\mathrm{ndim}}`` as recommended by `ter Braak (2006) <http://www.stat.columbia.edu/~gelman/stuff_for_blog/cajo.pdf>`_.
 - `aimh_prob::Float=0.1`: the probability to draw a AIMH proposal. 
-- `neff_proposal_dist::Int=nothing`: the window size used to calculate the rolling-window covariance estimate. By default this is the number of unique elements in the proposal mean and covariance ``0.5 d(d+3)``.
+- `neff_proposal_dist::Int=nothing`: the window size used to calculate the rolling-window covariance estimate. By default this is the number of unique elements in the proposal mean and covariance divided by mean ACF times mean accetance ratio ``4 d(d+3)``.
 - `df_proposal_dist::Float=10`: the degrees of freedom of the multivariate t distribution used for AIMH proposals.
 """
 function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.1, neff_prop_dist=nothing, df_proposal_dist::Int=10, progress::Bool=true)
