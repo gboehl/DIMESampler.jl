@@ -32,7 +32,7 @@ Define an example distribution:
 .. code-block:: julia
 
     # some imports
-    using Distributions, Random, LinearAlgebra, Plots
+    using DIMESampler, Distributions, Random, LinearAlgebra, Plots
 
     # make it reproducible
     Random.seed!(1)
@@ -46,7 +46,7 @@ Define an example distribution:
     LogProb = CreateDIMETestFunc(ndim, weight, m, cov_scale)
 
 ``LogProb`` will now return the log-PDF of a 35-dimensional bimodal Gaussian mixture. 
-**Important:** the function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. If you want to make use of parallelization (which is one of the central advantages of ensemble MCMC), you may want to ensure that this function evaluates its vectorized input in parallel, i.e.:
+**Important:** the function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. If you want to make use of parallelization (which is one of the central advantages of ensemble MCMC), you may want to ensure that this function evaluates its vectorized input in parallel, i.e. using `pmap` from `Distributed <https://docs.julialang.org/en/v1/stdlib/Distributed/>`_:
 
 .. code-block:: julia
 
@@ -60,7 +60,8 @@ Next, define the initial ensemble. In a Bayesian setup, a good initial ensemble 
 
     nchain = ndim*5 # a sane default
     initcov = I(ndim)*sqrt(2)
-    initchain = rand(MvNormal(zeros(ndim), initcov), nchain)
+    initmean = zeros(ndim)
+    initchain = rand(MvNormal(initmean, initcov), nchain)
 
 Setting the number of parallel chains to ``5*ndim`` is a sane default. For highly irregular distributions with several modes you should use more chains. Very simple distributions can go with less. 
 
@@ -68,7 +69,8 @@ Now let the sampler run for 3000 iterations.
 
 .. code-block:: julia
 
-    chains, lprobs, propdist = RunDIME(LogProb, initchain, 3000, progress=true, aimh_prob=0.1)
+    niter = 3000
+    chains, lprobs, propdist = RunDIME(LogProb, initchain, niter, progress=true, aimh_prob=0.1)
 
 .. code-block::
 
@@ -109,8 +111,8 @@ While DIME is an MCMC sampler, it can straightforwardy be used as a global optim
 
 .. code-block:: julia
 
-   plot(lprob[:,:], color="orange4", alpha=.05, legend=false, size=(900,300))
-   plot!(maximum(lprob)*ones(niter), color="blue3")
+   plot(lprobs[:,:], color="orange4", alpha=.05, legend=false, size=(900,300))
+   plot!(maximum(lprobs)*ones(niter), color="blue3")
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/lprobs.png?raw=true
   :width: 800

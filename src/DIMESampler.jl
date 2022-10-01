@@ -42,18 +42,20 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         npdist = neff_prop_dist
     end
 
+    # initialize
+    ccov = Matrix(1.0I, ndim, ndim)
+    cmean = zeros(ndim)
+    dist = MvTDist(dft, cmean, ccov)
+    accepted = ones(nchain)
+    cumlweight = -Inf
+
     # calculate intial values
     x = copy(init)
     lprob = lprobFunc(x)
-    ccov = cov(transpose(x)) # initialization does not matter
-    cmean = mean(x, dims=2) # initialization does not matter
-    accepted = ones(nchain)
-    cumlweight = -Inf
 
     # preallocate
     chains = zeros((niter, nchain, ndim))
     lprobs = zeros((niter, nchain))
-    dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft)
 
     # optional progress bar
     if progress
