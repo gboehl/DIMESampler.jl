@@ -82,7 +82,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         nmean = mean(x, dims=2)
 
         # update AIMH proposal distribution
-        newcumlweight = logsumexp(cumlweight, lweight)
+        newcumlweight = logaddexp(cumlweight, lweight)
         ccov = exp(cumlweight - newcumlweight) * ccov + exp(lweight - newcumlweight) * ncov
         cmean = exp(cumlweight - newcumlweight) * cmean + exp(lweight - newcumlweight) * nmean
 
