@@ -47,13 +47,13 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     lprob = lprobFunc(x)
     ccov = cov(transpose(x))
     cmean = mean(x, dims=2)
-    accepted = zeros(nchain)
-    naccepted = sum(accepted)
+    accepted = ones(nchain)
+    cumlweight = -Inf
 
     # preallocate
     chains = zeros((niter, nchain, ndim))
     lprobs = zeros((niter, nchain))
-    dist = nothing
+    dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft)
 
     # optional progress bar
     if progress
@@ -63,19 +63,6 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     end
 
     for i in iter
-
-        # update AIMH proposal distribution
-        if naccepted > 1
-
-            xaccepted = x[:, accepted]
-
-            # only use newly accepted to update AIMH proposal distribution
-            ncov = cov(transpose(xaccepted))
-            nmean = mean(xaccepted, dims=2)
-
-            ccov = (npdist - naccepted) / (npdist - 1) * ccov + (naccepted - 1) / (npdist - 1) * ncov
-            cmean = (1 - naccepted / npdist) * cmean + naccepted / npdist * nmean
-        end
 
         # get differential evolution proposal
         # draw the indices of the complementary chains
@@ -87,22 +74,31 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         q = x + g0 * (x[:,(i1 .% nchain) .+ 1] - x[:,(i2 .% nchain) .+ 1]) .+ f
         factors = zeros(nchain)
 
+        # log weight of current ensemble
+        lweight = logsumexp(lprobs) + log(sum(accepted)) - log(nchain)
+
+        # calculate stats for current ensemble
+        ncov = cov(transpose(x))
+        nmean = mean(x, dims=2)
+
+        # update AIMH proposal distribution
+        newcumlweight = logsumexp(cumlweight, lweight)
+        ccov = exp(cumlweight - newcumlweight) * ccov + exp(lweight - newcumlweight) * ncov
+        cmean = exp(cumlweight - newcumlweight) * cmean + exp(lweight - newcumlweight) * nmean
+
         # get AIMH proposal
         xchnge = rand(Uniform(0,1), nchain) .<= aimh_prob
 
-        if i > 1 & sum(xchnge) > 0
+        # draw alternative candidates and calculate their proposal density
+        dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft)
 
-            # draw alternative candidates and calculate their proposal density
-            dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft)
+        xcand = rand(dist, sum(xchnge))
+        lprop_old = logpdf(dist, x[:, xchnge])
+        lprop_new = logpdf(dist, xcand)
 
-            xcand = rand(dist, sum(xchnge))
-            lprop_old = logpdf(dist, x[:, xchnge])
-            lprop_new = logpdf(dist, xcand)
-
-            # update proposals and factors
-            q[:,xchnge] = xcand
-            factors[xchnge] = lprop_old - lprop_new
-        end
+        # update proposals and factors
+        q[:,xchnge] = xcand
+        factors[xchnge] = lprop_old - lprop_new
 
         # Metropolis-Hasings 
         newlprob = lprobFunc(q)
@@ -112,6 +108,8 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         # update chains
         x[:,accepted] = q[:,accepted]
         lprob[accepted] = newlprob[accepted]
+
+        # store
         chains[i,:,:] = transpose(x)
         lprobs[i,:] = lprob
 
