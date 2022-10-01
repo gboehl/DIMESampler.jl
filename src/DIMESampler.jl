@@ -45,8 +45,8 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     # calculate intial values
     x = copy(init)
     lprob = lprobFunc(x)
-    ccov = cov(transpose(x))
-    cmean = mean(x, dims=2)
+    ccov = cov(transpose(x)) # initialization does not matter
+    cmean = mean(x, dims=2) # initialization does not matter
     accepted = ones(nchain)
     cumlweight = -Inf
 
