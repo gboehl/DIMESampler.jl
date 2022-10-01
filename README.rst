@@ -15,17 +15,12 @@ The sampler has a series of advantages over conventional samplers:
 Installation
 ------------
 
-As long as this is not in the official repositories, download the file `DIMESampler.jl <https://github.com/gboehl/DIMESampler.jl/blob/main/src/DIMESampler.jl>`_ (from ``src``) and go for:
+The package is in the official Julia registry and you can simply go for:
 
 .. code-block:: julia
 
-   # already load multithreading interface here and initialize
-   using Distributed
-   addprocs(8) # or whatever your number of cores is
+   using Pkg; Pkg.add("DIMESampler")
 
-   # use @everywhere to ensure that the module is known to each thread
-   @everywhere push!(LOAD_PATH,<insert_path_to_DIMESampler.jl>) # insert path to DIMESampler.jl here!
-   @everywhere using DIMESampler
 
 There exists a complementary Python implementation `here <https://github.com/gboehl/emcwrap>`_.
 
