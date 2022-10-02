@@ -46,6 +46,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     ccov = Matrix(1.0I, ndim, ndim)
     cmean = zeros(ndim)
     dist = MvTDist(dft, cmean, ccov)
+    dist = MvTDist(dft, cmean, ccov)
     accepted = ones(nchain)
     cumlweight = -Inf
 
@@ -150,7 +151,7 @@ function CreateDIMETestFunc(ndim, weight, distance, scale)
 end
 
 @doc raw"""
-    MarginalPDF(x::Array, cov_scale::Float, distance::Float, weight::Float)
+    DIMETestFuncMarginalPDFMarginalPDF(x::Array, cov_scale::Float, distance::Float, weight::Float)
 
 Get the marginal PDF over the first dimension of the test distribution.
 """
@@ -159,4 +160,45 @@ function DIMETestFuncMarginalPDF(x, cov_scale, distance, weight)
     return (1-weight)*pdf.(normd, x .- distance/2) + weight*pdf.(normd, x .+ distance/2)
 end
 
+@doc raw"""
+    CreateDIMETestFunc3Modal(ndim::Int, weight::Float, distance::Float, scale::Float)
+
+Create a trimodal Gaussian mixture for testing.
+"""
+function CreateDIMETestFunc3Modal(ndim, weight, distance, scale)
+
+    covm = I(ndim)*scale
+    meanm = zeros(ndim)
+    meanm[1] = distance
+
+    lw1 = log(weight[1])
+    lw2 = log(weight[2])
+    lw3 = log(1-weight[1]-weight[2])
+
+    dist = MvNormal(zero(meanm), covm)
+
+    function TestLogProb(p)
+
+        stack = cat(lw1 .+ logpdf(dist, p .+ meanm), 
+                    lw2 .+ logpdf(dist, p), 
+                    lw3 .+ logpdf(dist, p .- meanm), 
+                    dims=2)
+        return logsumexp(stack, dims=2)[:]
+
+    end
 end
+
+@doc raw"""
+    DIMETestFuncMarginalPDF3Modal(x::Array, cov_scale::Float, distance::Float, weight::Float)
+
+Get the marginal PDF over the first dimension of the test distribution.
+"""
+function DIMETestFuncMarginalPDF3Modal(x, cov_scale, distance, weight)
+
+    normd = Normal(0, sqrt(cov_scale))
+
+    return weight[1]*pdf.(normd, x .+ distance) + weight[2]*pdf.(normd, x) + (1-weight[1]-weight[2])*pdf.(normd, x .- distance)
+end
+
+end
+
