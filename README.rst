@@ -74,7 +74,7 @@ Now let the sampler run for 3000 iterations.
 
 .. code-block::
 
-    [ll/MAF: 12.440(4e+00)/0.21] 100.0%┣█████████████████████████████┫ 2.0k/2.0k [00:01<00:00, 1.4kit/s]
+    [ll/MAF: 12.187(4e+00)/19%] 100.0%┣███████████████████████████████┫ 3.0k/3.0k [00:15<00:00, 198it/s]
 
 The setting of ``aimh_prob`` is actually the default. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in.
 
