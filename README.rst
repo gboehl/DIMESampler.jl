@@ -107,7 +107,7 @@ To ensure propper mixing, let us also have a look at the MCMC traces, again focu
   :width: 800
   :alt: MCMC traces
 
-While DIME is an MCMC sampler, it can straightforwardy be used as a global optimization routine. To this end, specify some broad starting region (in a non-Bayesian setup there is no prior) and let the sampler run for an extended number of iterations. Finally, assess whether the maximum value per ensemble did not change much in the last few hundered iterations. In a normal Bayesian setup, plotting the associated log-likelhood over time also helps to assess convergence to the posterior distribution.
+While DIME is a MCMC sampler, it can straightforwardy be used as a global optimization routine. To this end, specify some broad starting region (in a non-Bayesian setup there is no prior) and let the sampler run for an extended number of iterations. Finally, assess whether the maximum value per ensemble did not change much in the last few hundered iterations. In a normal Bayesian setup, plotting the associated log-likelhood over time also helps to assess convergence to the posterior distribution.
 
 .. code-block:: julia
 
