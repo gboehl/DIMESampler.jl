@@ -15,7 +15,7 @@ The sampler has a series of advantages over conventional samplers:
 Installation
 ------------
 
-The package is in the official Julia registry and you can simply go for:
+The package is in the official Julia registry:
 
 .. code-block:: julia
 
