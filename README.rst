@@ -78,7 +78,7 @@ Now let the sampler run for 3000 iterations.
 
 The setting of ``aimh_prob`` is actually the default. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in.
 
-Finally, plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
+Let's plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
 
 .. code-block:: julia
 
