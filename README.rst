@@ -97,7 +97,7 @@ Let's plot the marginal distribution along the first dimension (remember that th
   :width: 800
   :alt: Sample and target distribution
 
-To ensure propper mixing, let us also have a look at the MCMC traces, again focussing on the first dimension. Note how chains are also switching between the two modes because of the global proposal kernel.
+To ensure proper mixing, let us also have a look at the MCMC traces, again focussing on the first dimension. Note how chains are also switching between the two modes because of the global proposal kernel.
 
 .. code-block:: julia
 
@@ -107,7 +107,7 @@ To ensure propper mixing, let us also have a look at the MCMC traces, again focu
   :width: 800
   :alt: MCMC traces
 
-While DIME is a MCMC sampler, it can straightforwardy be used as a global optimization routine. To this end, specify some broad starting region (in a non-Bayesian setup there is no prior) and let the sampler run for an extended number of iterations. Finally, assess whether the maximum value per ensemble did not change much in the last few hundered iterations. In a normal Bayesian setup, plotting the associated log-likelhood over time also helps to assess convergence to the posterior distribution.
+While DIME is a MCMC sampler, it can straightforwardly be used as a global optimization routine. To this end, specify some broad starting region (in a non-Bayesian setup there is no prior) and let the sampler run for an extended number of iterations. Finally, assess whether the maximum value per ensemble did not change much in the last few hundred iterations. In a normal Bayesian setup, plotting the associated log-likelihood over time also helps to assess convergence to the posterior distribution.
 
 .. code-block:: julia
 
