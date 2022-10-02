@@ -93,7 +93,7 @@ Let's plot the marginal distribution along the first dimension (remember that th
     # histogram of the actual sample
     histogram!(chains[end-niter÷3:end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black", bins=100)
 
-.. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/figure.png?raw=true
+.. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/dist.png?raw=true
   :width: 800
   :alt: Sample and target distribution
 
