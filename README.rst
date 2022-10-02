@@ -8,14 +8,14 @@ This is a standalone Julia implementation of the DIME sampler (previously ADEMC 
 The sampler has a series of advantages over conventional samplers:
 
 #. DIME MCMC is a (very fast) **global multi-start optimizer** and, at the same time, a **MCMC sampler** that converges to the posterior distribution. This makes any posterior mode density maximization prior to MCMC sampling superfluous.
-#. The DIME sampler is pretty robust for odd shaped, **bimodal distributions**.
+#. The DIME sampler is pretty robust for odd shaped, **multimodal distributions**.
 #. DIME MCMC is **parallelizable**: many chains can run in parallel, and the necessary number of draws decreases almost one-to-one with the number of chains.
-#. DIME proposals are generated from an **endogenous and adaptive proposal distribution**, thereby reducing the number of necessary meta-parameters and providing close-to-optimal proposal distributions.
+#. DIME proposals are generated from an **endogenous and adaptive proposal distribution**, thereby providing close-to-optimal proposal distributions without the need for manual fine-tuning.
 
 Installation
 ------------
 
-The package is in the official Julia registry:
+Just get the package from the official Julia registry:
 
 .. code-block:: julia
 
@@ -27,7 +27,7 @@ There exists a complementary Python implementation `here <https://github.com/gbo
 Usage
 -----
 
-Define a challenging example distribution:
+Define a challenging example distribution **with three separate modes**:
 
 .. code-block:: julia
 
@@ -45,7 +45,8 @@ Define a challenging example distribution:
 
     LogProb = CreateDIMETestFunc(ndim, weight, m, cov_scale)
 
-``LogProb`` will now return the log-PDF of a 35-dimensional Gaussian mixture with three separate modes. 
+``LogProb`` will now return the log-PDF of a 35-dimensional Gaussian mixture.
+
 **Important:** the function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. If you want to make use of parallelization (which is one of the central advantages of ensemble MCMC), you may want to ensure that this function evaluates its vectorized input in parallel, i.e. using `pmap` from `Distributed <https://docs.julialang.org/en/v1/stdlib/Distributed/>`_:
 
 .. code-block:: julia
@@ -77,7 +78,7 @@ Now let the sampler run for 3000 iterations.
 
     [ll/MAF: 12.187(4e+00)/19%] 100.0%┣███████████████████████████████┫ 3.0k/3.0k [00:15<00:00, 198it/s]
 
-The setting of ``aimh_prob`` is actually the default. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in.
+The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in.
 
 Let's plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
 
@@ -97,7 +98,7 @@ Let's plot the marginal distribution along the first dimension (remember that th
   :width: 800
   :alt: Sample and target distribution
 
-To ensure proper mixing, let us also have a look at the MCMC traces, again focussing on the first dimension. Note how chains are also switching between the two modes because of the global proposal kernel.
+To ensure proper mixing, let us also have a look at the MCMC traces, again focussing on the first dimension:
 
 .. code-block:: julia
 
@@ -106,6 +107,8 @@ To ensure proper mixing, let us also have a look at the MCMC traces, again focus
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/traces.png?raw=true
   :width: 800
   :alt: MCMC traces
+  
+Note how chains are also switching between the two modes because of the global proposal kernel.
 
 While DIME is a MCMC sampler, it can straightforwardly be used as a global optimization routine. To this end, specify some broad starting region (in a non-Bayesian setup there is no prior) and let the sampler run for an extended number of iterations. Finally, assess whether the maximum value per ensemble did not change much in the last few hundred iterations. In a normal Bayesian setup, plotting the associated log-likelihood over time also helps to assess convergence to the posterior distribution.
 
