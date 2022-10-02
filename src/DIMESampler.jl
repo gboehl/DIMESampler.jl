@@ -8,7 +8,7 @@ module DIMESampler
     
 using Distributions, ProgressBars, Printf, LinearAlgebra, StatsFuns
 
-export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF
+export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF, CreateDIMETestFunc3Modal, DIMETestFuncMarginalPDF3Modal
 
 @doc raw"""
     DIMESampler(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.05, nsamples_proposal_dist=nothing, df_proposal_dist::Int=10, progress::Bool=true)
@@ -88,6 +88,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         newcumlweight = logaddexp(cumlweight, lweight)
         ccov = exp(cumlweight - newcumlweight) * ccov + exp(lweight - newcumlweight) * ncov
         cmean = exp(cumlweight - newcumlweight) * cmean + exp(lweight - newcumlweight) * nmean
+        cumlweight = newcumlweight
 
         # get AIMH proposal
         xchnge = rand(Uniform(0,1), nchain) .<= aimh_prob
