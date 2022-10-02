@@ -8,7 +8,7 @@ module DIMESampler
     
 using Distributions, ProgressBars, Printf, LinearAlgebra, StatsFuns
 
-export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF, CreateDIMETestFunc3Modal, DIMETestFuncMarginalPDF3Modal
+export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF
 
 @doc raw"""
     DIMESampler(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.05, nsamples_proposal_dist=nothing, df_proposal_dist::Int=10, progress::Bool=true)
@@ -128,45 +128,9 @@ end
 @doc raw"""
     CreateDIMETestFunc(ndim::Int, weight::Float, distance::Float, scale::Float)
 
-Create a bimodal Gaussian mixture for testing.
-"""
-function CreateDIMETestFunc(ndim, weight, distance, scale)
-
-    covm = I(ndim)*scale
-    mean1 = zeros(ndim)
-    mean2 = copy(mean1)
-    mean1[1] = -distance/2
-    mean2[1] = +distance/2
-
-    lw1 = log(weight)
-    lw2 = log(1-weight)
-
-    dist = MvNormal(zero(mean1), covm)
-
-    function TestLogProb(p)
-
-        return logaddexp.(lw1 .+ logpdf(dist, p .- mean1), 
-                          lw2 .+ logpdf(dist, p .- mean2))
-
-    end
-end
-
-@doc raw"""
-    DIMETestFuncMarginalPDFMarginalPDF(x::Array, cov_scale::Float, distance::Float, weight::Float)
-
-Get the marginal PDF over the first dimension of the test distribution.
-"""
-function DIMETestFuncMarginalPDF(x, cov_scale, distance, weight)
-    normd = Normal(0, sqrt(cov_scale))
-    return (1-weight)*pdf.(normd, x .- distance/2) + weight*pdf.(normd, x .+ distance/2)
-end
-
-@doc raw"""
-    CreateDIMETestFunc3Modal(ndim::Int, weight::Float, distance::Float, scale::Float)
-
 Create a trimodal Gaussian mixture for testing.
 """
-function CreateDIMETestFunc3Modal(ndim, weight, distance, scale)
+function CreateDIMETestFunc(ndim, weight, distance, scale)
 
     covm = I(ndim)*scale
     meanm = zeros(ndim)
@@ -190,11 +154,11 @@ function CreateDIMETestFunc3Modal(ndim, weight, distance, scale)
 end
 
 @doc raw"""
-    DIMETestFuncMarginalPDF3Modal(x::Array, cov_scale::Float, distance::Float, weight::Float)
+    DIMETestFuncMarginalPDF(x::Array, cov_scale::Float, distance::Float, weight::Float)
 
 Get the marginal PDF over the first dimension of the test distribution.
 """
-function DIMETestFuncMarginalPDF3Modal(x, cov_scale, distance, weight)
+function DIMETestFuncMarginalPDF(x, cov_scale, distance, weight)
 
     normd = Normal(0, sqrt(cov_scale))
 

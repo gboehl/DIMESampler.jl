@@ -27,7 +27,7 @@ There exists a complementary Python implementation `here <https://github.com/gbo
 Usage
 -----
 
-Define an example distribution:
+Define a challenging example distribution:
 
 .. code-block:: julia
 
@@ -40,12 +40,12 @@ Define an example distribution:
     # define distribution
     m = 2
     cov_scale = 0.05
-    weight = 0.33
+    weight = (0.33, 0.1)
     ndim = 35
 
     LogProb = CreateDIMETestFunc(ndim, weight, m, cov_scale)
 
-``LogProb`` will now return the log-PDF of a 35-dimensional bimodal Gaussian mixture. 
+``LogProb`` will now return the log-PDF of a 35-dimensional Gaussian mixture with three separate modes. 
 **Important:** the function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. If you want to make use of parallelization (which is one of the central advantages of ensemble MCMC), you may want to ensure that this function evaluates its vectorized input in parallel, i.e. using `pmap` from `Distributed <https://docs.julialang.org/en/v1/stdlib/Distributed/>`_:
 
 .. code-block:: julia
@@ -58,8 +58,9 @@ Next, define the initial ensemble. In a Bayesian setup, a good initial ensemble 
 
 .. code-block:: julia
 
+    initvar = 2
     nchain = ndim*5 # a sane default
-    initcov = I(ndim)*sqrt(2)
+    initcov = I(ndim)*initvar
     initmean = zeros(ndim)
     initchain = rand(MvNormal(initmean, initcov), nchain)
 
@@ -83,15 +84,14 @@ Let's plot the marginal distribution along the first dimension (remember that th
 .. code-block:: julia
 
    # analytical marginal distribution in first dimension
-   x = range(-4,4,1000)
-   mpdf = DIMETestFuncMarginalPDF(x, cov_scale, m, weight)
-   plot(x, mpdf, label="Target", lw=2)
+    x = range(-4,4,1000)
+    mpdf = DIMETestFuncMarginalPDF(x, cov_scale, m, weight)
 
-   # a larger sample from the initial distribution
-   init = rand(MvNormal(initmean, initcov), Int(nchain*niter/4))
-   histogram!(init[1,:], normalize=true, alpha=.5, label="Initialization")
-   # histogram of the actual sample
-   histogram!(chains[end-niter÷3:end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black")
+    plot(x, mpdf, label="Target", lw=2, legend_position=:topleft)
+    plot!(x, pdf.(Normal(0, sqrt(initvar)), x), label="Initialization")
+    plot!(x, pdf.(TDist(10), (x .- propdist.μ[1])./sqrt(propdist.Σ[1,1]*10/8)), label="Final proposal")
+    # histogram of the actual sample
+    histogram!(chains[end-niter÷3:end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black", bins=100)
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/figure.png?raw=true
   :width: 800
