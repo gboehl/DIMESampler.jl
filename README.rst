@@ -78,7 +78,7 @@ Now let the sampler run for 3000 iterations.
 
     [ll/MAF: 12.187(4e+00)/19%] 100.0%┣███████████████████████████████┫ 3.0k/3.0k [00:15<00:00, 198it/s]
 
-The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in.
+The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in. The information in the progress bar has the structure `[ll/MAF: <maximum log-prob>(<standard deviation of log-prob>)/<mean acceptance fraction>]...`.
 
 Let's plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
 
