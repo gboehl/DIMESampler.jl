@@ -92,7 +92,7 @@ Let's plot the marginal distribution along the first dimension (remember that th
     plot!(x, pdf.(Normal(0, sqrt(initvar)), x), label="Initialization")
     plot!(x, pdf.(TDist(10), (x .- propdist.μ[1])./sqrt(propdist.Σ[1,1]*10/8)), label="Final proposal")
     # histogram of the actual sample
-    histogram!(chains[end-niter÷3:end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black", bins=100)
+    histogram!(chains[end-niter÷2:end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black", bins=100)
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/dist.png?raw=true
   :width: 800
