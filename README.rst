@@ -47,7 +47,7 @@ Define a challenging example distribution **with three separate modes**:
 
 ``LogProb`` will now return the log-PDF of a 35-dimensional Gaussian mixture.
 
-**Important:** the function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. If you want to make use of parallelization (which is one of the central advantages of ensemble MCMC), you may want to ensure that this function evaluates its vectorized input in parallel, i.e. using `pmap` from `Distributed <https://docs.julialang.org/en/v1/stdlib/Distributed/>`_:
+**Important:** the function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. If you want to make use of parallelization (which is one of the central advantages of ensemble MCMC), you may want to ensure that this function evaluates its vectorized input in parallel, i.e. using ``pmap`` from `Distributed <https://docs.julialang.org/en/v1/stdlib/Distributed/>`_:
 
 .. code-block:: julia
 
@@ -78,7 +78,7 @@ Now let the sampler run for 3000 iterations.
 
     [ll/MAF: 12.187(4e+00)/19%] 100.0%┣███████████████████████████████┫ 3.0k/3.0k [00:15<00:00, 198it/s]
 
-The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in. The information in the progress bar has the structure `[ll/MAF: <maximum log-prob>(<standard deviation of log-prob>)/<mean acceptance fraction>]...`.
+The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in. The information in the progress bar has the structure ``[ll/MAF: <maximum log-prob>(<standard deviation of log-prob>)/<mean acceptance fraction>]...``.
 
 Let's plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
 
