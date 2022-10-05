@@ -27,6 +27,30 @@ There exists a complementary Python implementation `here <https://github.com/gbo
 Usage
 -----
 
+The core functionality is included in the function ``RunDIME``:
+
+.. code-block:: julia
+
+    # import package
+    using DIMESampler
+
+    # define your density function
+    function LogProb(x):
+        ...
+        return lprob
+    end
+
+    # define the initial ensemble
+    ...
+
+    # off you go sampling
+    chains, lprobs, propdist = RunDIME(LogProb, initchain, niter)
+    ...
+
+
+Tutorial
+--------
+
 Define a challenging example distribution **with three separate modes**:
 
 .. code-block:: julia
