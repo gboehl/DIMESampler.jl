@@ -140,7 +140,7 @@ function CreateDIMETestFunc(ndim, weight, distance, scale)
     lw2 = log(weight[2])
     lw3 = log(1-weight[1]-weight[2])
 
-    dist = MvNormal(zero(meanm), covm)
+    dist = MvNormal(zeros(ndim), covm)
 
     function TestLogProb(p)
 
