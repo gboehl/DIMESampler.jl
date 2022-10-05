@@ -41,7 +41,10 @@ The core functionality is included in the function ``RunDIME``:
     end
 
     # define the initial ensemble
-    ...
+    initchain = ...
+
+    # define the number of iterations to run
+    niter = ...
 
     # off you go sampling
     chains, lprobs, propdist = RunDIME(LogProb, initchain, niter)
