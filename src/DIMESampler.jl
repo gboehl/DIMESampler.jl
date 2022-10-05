@@ -39,7 +39,6 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     ccov = Matrix(1.0I, ndim, ndim)
     cmean = zeros(ndim)
     dist = MvTDist(dft, cmean, ccov)
-    dist = MvTDist(dft, cmean, ccov)
     accepted = ones(nchain)
     cumlweight = -Inf
 
