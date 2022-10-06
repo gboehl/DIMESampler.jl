@@ -94,16 +94,16 @@ Next, define the initial ensemble. In a Bayesian setup, a good initial ensemble 
 
 Setting the number of parallel chains to ``5*ndim`` is a sane default. For highly irregular distributions with several modes you should use more chains. Very simple distributions can go with less. 
 
-Now let the sampler run for 3000 iterations.
+Now let the sampler run for 5000 iterations.
 
 .. code-block:: julia
 
-    niter = 3000
+    niter = 5000
     chains, lprobs, propdist = RunDIME(LogProb, initchain, niter, progress=true, aimh_prob=0.1)
 
 .. code-block::
 
-    [ll/MAF: 12.187(4e+00)/19%] 100.0%┣███████████████████████████████┫ 3.0k/3.0k [00:15<00:00, 198it/s]
+    [ll/MAF: 12.187(4e+00)/19%] 100.0%┣███████████████████████████████┫ 5.0k/5.0k [00:15<00:00, 198it/s]
 
 The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in. The information in the progress bar has the structure ``[ll/MAF: <maximum log-prob>(<standard deviation of log-prob>)/<mean acceptance fraction>]...``.
 
