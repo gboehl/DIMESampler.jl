@@ -22,7 +22,7 @@ Just get the package from the official Julia registry:
    using Pkg; Pkg.add("DIMESampler")
 
 
-There exists a complementary Python implementation `here <https://github.com/gboehl/emcwrap>`_.
+There exists complementary implementations `for Python <https://github.com/gboehl/emcwrap>`_ and `for matlab <https://github.com/gboehl/dime-mcmc-matlab>`_.
 
 Usage
 -----
