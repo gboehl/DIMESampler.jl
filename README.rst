@@ -3,7 +3,7 @@ DIMESampler.jl
 
 **Differential-Independence Mixture Ensemble ("DIME") MCMC sampling for Julia**
 
-This is a standalone Julia implementation of the DIME sampler (previously ADEMC sampler) proposed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/ademc_boehl.pdf>`_. *(Gregor Boehl, 2022, CRC 224 discussion paper series)*.
+This is a standalone Julia implementation of the DIME sampler proposed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/dime_mcmc_boehl.pdf>`_. *(Gregor Boehl, 2022, CRC 224 discussion paper series)*.
 
 The sampler has a series of advantages over conventional samplers:
 
