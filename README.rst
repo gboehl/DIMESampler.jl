@@ -50,6 +50,7 @@ The core functionality is included in the function ``RunDIME``:
     chains, lprobs, propdist = RunDIME(LogProb, initchain, niter)
     ...
 
+The function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. 
 
 Tutorial
 --------
