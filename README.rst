@@ -7,10 +7,10 @@ This is a standalone Julia implementation of the DIME sampler proposed in `Ensem
 
 The sampler has a series of advantages over conventional samplers:
 
-#. DIME MCMC is a (very fast) **global multi-start optimizer** and, at the same time, a **MCMC sampler** that converges to the posterior distribution. This makes any posterior mode density maximization prior to MCMC sampling superfluous.
+#. DIME MCMC is a (very fast) gradient-free **global multi-start optimizer** and, at the same time, a **MCMC sampler** that converges to the posterior distribution. This makes any posterior mode density maximization prior to MCMC sampling superfluous.
 #. The DIME sampler is pretty robust for odd shaped, **multimodal distributions**.
 #. DIME MCMC is **parallelizable**: many chains can run in parallel, and the necessary number of draws decreases almost one-to-one with the number of chains.
-#. DIME proposals are generated from an **endogenous and adaptive proposal distribution**, thereby providing close-to-optimal proposal distributions without the need for manual fine-tuning.
+#. DIME proposals are generated from an **endogenous and adaptive proposal distribution**, thereby providing close-to-optimal proposal distributions for black box target distributions without the need for manual fine-tuning.
 
 Installation
 ------------
