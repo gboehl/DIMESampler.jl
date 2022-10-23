@@ -104,9 +104,9 @@ Now let the sampler run for 5000 iterations.
 
 .. code-block::
 
-    [ll/MAF: 12.187(4e+00)/19%] 100.0%┣███████████████████████████████┫ 5.0k/5.0k [00:15<00:00, 198it/s]
+    [ll/MAF:  12.187(4e+00)/19% | -5e-04] 100.0%┣███████████████████████████████┫ 5.0k/5.0k [00:15<00:00, 198it/s]
 
-The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in. The information in the progress bar has the structure ``[ll/MAF: <maximum log-prob>(<standard deviation of log-prob>)/<mean acceptance fraction>]...``.
+The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in. The information in the progress bar has the structure ``[ll/MAF: <maximum log-prob>(<standard deviation of log-prob>)/<mean acceptance fraction> | <log state weight>]...``, where ``<log state weight>`` is the current log-weight on the history of the proposal distribution. The closer this value is to zero (i.e. the actual weight to one), the less relevant are current ensembles for the estimated proposal distribution. It can hence be seen as a measure of convergence.
 
 Let's plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
 

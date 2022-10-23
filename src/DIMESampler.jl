@@ -78,8 +78,9 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
 
         # update AIMH proposal distribution
         newcumlweight = logaddexp(cumlweight, lweight)
-        ccov = exp(cumlweight - newcumlweight) * ccov + exp(lweight - newcumlweight) * ncov
-        cmean = exp(cumlweight - newcumlweight) * cmean + exp(lweight - newcumlweight) * nmean
+        statelweight = cumlweight - newcumlweight
+        ccov = exp(statelweight) * ccov + exp(lweight - newcumlweight) * ncov
+        cmean = exp(statelweight) * cmean + exp(lweight - newcumlweight) * nmean
         cumlweight = newcumlweight
 
         # get AIMH proposal
@@ -110,7 +111,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         lprobs[i,:] = lprob
 
         if progress
-            set_description(iter, string(@sprintf("[ll/MAF: %.3f(%1.0e)/%d%%]", maximum(lprob), std(lprob), 100*naccepted/nchain)))
+            set_description(iter, string(@sprintf("[ll/MAF: %7.3f(%1.0e)/%2.0d%% | %1.0e]", maximum(lprob), std(lprob), 100*naccepted/nchain, statelweight)))
         end
     end
 
