@@ -12,6 +12,10 @@ The sampler has a series of advantages over conventional samplers:
 #. DIME MCMC is **parallelizable**: many chains can run in parallel, and the necessary number of draws decreases almost one-to-one with the number of chains.
 #. DIME proposals are generated from an **endogenous and adaptive proposal distribution**, thereby providing close-to-optimal proposal distributions for black box target distributions without the need for manual fine-tuning.
 
+.. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/dist.png?raw=true
+  :width: 800
+  :alt: Sample and target distribution
+
 Installation
 ------------
 
@@ -55,7 +59,7 @@ The function returning the log-density must be vectorized, i.e. able to evaluate
 Tutorial
 --------
 
-Define a challenging example distribution **with three separate modes**:
+Define a challenging example distribution **with three separate modes** (the distribution from the figure above):
 
 .. code-block:: julia
 
@@ -108,7 +112,7 @@ Now let the sampler run for 5000 iterations.
 
 The setting of ``aimh_prob`` is the actual default value. For less complex distributions (e.g. distributions closer to Gaussian) a higher value can be chosen, which accelerates burn-in. The information in the progress bar has the structure ``[ll/MAF: <maximum log-prob>(<standard deviation of log-prob>)/<mean acceptance fraction> | <log state weight>]...``, where ``<log state weight>`` is the current log-weight on the history of the proposal distribution. The closer this value is to zero (i.e. the actual weight to one), the less relevant are current ensembles for the estimated proposal distribution. It can hence be seen as a measure of convergence.
 
-Let's plot the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
+The following code creates the figure above, which is a plot of the marginal distribution along the first dimension (remember that this actually is a 35-dimensional distribution).
 
 .. code-block:: julia
 
@@ -121,10 +125,6 @@ Let's plot the marginal distribution along the first dimension (remember that th
     plot!(x, pdf.(TDist(10), (x .- propdist.μ[1])./sqrt(propdist.Σ[1,1]*10/8)), label="Final proposal")
     # histogram of the actual sample
     histogram!(chains[end-niter÷2:end,:,1][:], normalize=true, alpha=.5, label="Sample", color="black", bins=100)
-
-.. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/dist.png?raw=true
-  :width: 800
-  :alt: Sample and target distribution
 
 To ensure proper mixing, let us also have a look at the MCMC traces, again focussing on the first dimension:
 
