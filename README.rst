@@ -3,7 +3,7 @@ DIMESampler.jl
 
 **Differential-Independence Mixture Ensemble ("DIME") MCMC sampling for Julia**
 
-This is a standalone Julia implementation of the DIME sampler proposed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/dime_mcmc_boehl.pdf>`_. *(Gregor Boehl, 2022, CRC 224 discussion paper series)*.
+This is a standalone Julia implementation of the DIME sampler proposed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/dime_mcmc_boehl.pdf>`_. *(Gregor Boehl, 2022, SSRN No. 4250395)*.
 
 The sampler has a series of advantages over conventional samplers:
 
@@ -11,10 +11,13 @@ The sampler has a series of advantages over conventional samplers:
 #. The DIME sampler is pretty robust for odd shaped, **multimodal distributions**.
 #. DIME MCMC is **parallelizable**: many chains can run in parallel, and the necessary number of draws decreases almost one-to-one with the number of chains.
 #. DIME proposals are generated from an **endogenous and adaptive proposal distribution**, thereby providing close-to-optimal proposal distributions for black box target distributions without the need for manual fine-tuning.
-
-.. image:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/dist.png?raw=true
+    
+.. figure:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/dist.png?raw=true
   :width: 800
   :alt: Sample and target distribution
+  
+  Figure: A trimodal example distribution in 35 dimensions
+
 
 Installation
 ------------
@@ -157,8 +160,8 @@ If you are using this software in your research, please cite
 .. code-block::
 
     @techreport{boehl2022mcmc,
-    title         = {Ensemble MCMC Sampling for DSGE Models},
-    author        = {Boehl, Gregor},
-    year          = 2022,
-    institution   = {CRC224 discussion paper series}
+    author={Gregor Boehl},
+    title={Ensemble MCMC Sampling for DSGE Models},
+    journal={Available at SSRN 4250395},
+    year={2022}
     }
