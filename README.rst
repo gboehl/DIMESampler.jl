@@ -1,7 +1,7 @@
 DIMESampler.jl
 ========
 
-.. image:: https://github.com/gboehl/DIMESampler.jl/workflows/Run%20tests/badge.svg
+.. image:: https://github.com/gboehl/DIMESampler.jl/workflows/Testing/badge.svg
     :target: https://github.com/gboehl/DIMESampler.jl/actions
 
 **Differential-Independence Mixture Ensemble ("DIME") MCMC sampling for Julia**
