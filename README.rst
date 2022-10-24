@@ -1,6 +1,9 @@
 DIMESampler.jl
 ========
 
+.. image:: https://github.com/gboehl/DIMESampler.jl/workflows/Run%20tests/badge.svg
+    :target: https://github.com/gboehl/DIMESampler.jl/actions
+
 **Differential-Independence Mixture Ensemble ("DIME") MCMC sampling for Julia**
 
 This is a standalone Julia implementation of the DIME sampler proposed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/dime_mcmc_boehl.pdf>`_. *(Gregor Boehl, 2022, SSRN No. 4250395)*.
