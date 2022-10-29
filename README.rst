@@ -62,13 +62,13 @@ The core functionality is included in the function ``RunDIME``:
 
 The ``LogProb`` function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. 
 
-The ensemble can be evaluated in parallel, which is one of the central advantages of ensemble MCMC. You may want to ensure that ``LogProb`` evaluates its vectorized input in parallel, e.g. by using ``pmap`` from `Distributed <https://docs.julialang.org/en/v1/stdlib/Distributed/>`_
+The ensemble can be evaluated in parallel, which is one of the central advantages of ensemble MCMC. To have ``LogProb`` evaluate its vectorized input in parallel you can e.g. use ``pmap`` from `Distributed <https://docs.julialang.org/en/v1/stdlib/Distributed/>`_
 
 .. code-block:: julia
 
     LogProbParallel(x) = pmap(LogProb, eachslice(x, dims=2))
     
-and then pass this function to ``RunDIME` instead.
+and then pass this function to ``RunDIME`` instead.
 
 Tutorial
 --------
