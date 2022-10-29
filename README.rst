@@ -168,11 +168,11 @@ References
 
 If you are using this software in your research, please cite
 
-.. code-block::
+.. code-block:: bibtex
 
     @techreport{boehl2022mcmc,
     author={Gregor Boehl},
-    title={Ensemble MCMC Sampling for DSGE Models},
+    title={Ensemble MCMC Sampling for Robust Bayesian Inference},
     journal={Available at SSRN 4250395},
     year={2022}
     }
