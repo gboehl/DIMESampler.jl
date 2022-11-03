@@ -130,7 +130,7 @@ The following code creates the figure above, which is a plot of the marginal dis
 
 .. code-block:: julia
 
-   # analytical marginal distribution in first dimension
+    # analytical marginal distribution in first dimension
     x = range(-4,4,1000)
     mpdf = DIMETestFuncMarginalPDF(x, cov_scale, m, weight)
 
