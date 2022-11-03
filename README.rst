@@ -31,7 +31,7 @@ Just get the package from the official Julia registry:
 
    using Pkg; Pkg.add("DIMESampler")
 
-
+The package should work with Julia versions starting from v1.6.
 There exist complementary implementations `for Python <https://github.com/gboehl/emcwrap>`_ and `for matlab <https://github.com/gboehl/dime-mcmc-matlab>`_.
 
 Usage
