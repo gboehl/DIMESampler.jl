@@ -47,8 +47,11 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     lprob = lprobFunc(x)
 
     # preallocate
-    chains = zeros((niter, nchain, ndim))
-    lprobs = zeros((niter, nchain))
+    lprobs = Array{Float64,2}(undef, niter, nchain)
+    lprobs = fill!(lprobs, 0.0)
+
+    chains = Array{Float64,3}(undef, niter, nchain, ndim)
+    chains = fill!(chains, 0.0)
 
     # optional progress bar
     if progress
@@ -57,7 +60,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         iter = 1:niter
     end
 
-    for i in iter
+    @inbounds for i in iter
 
         # get differential evolution proposal
         # draw the indices of the complementary chains
@@ -84,7 +87,10 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         cumlweight = newcumlweight
 
         # get AIMH proposal
-        xchnge = rand(Uniform(0,1), nchain) .<= aimh_prob
+        xchnge = rand(Uniform(0,1), nchain) .<= aimh_prob                           
+        while sum(xchnge) == 0
+            xchnge = rand(Uniform(0,1), nchain) .<= aimh_prob                          
+        end
 
         # draw alternative candidates and calculate their proposal density
         dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft)
