@@ -19,13 +19,12 @@ initmean = zeros(ndim)
 initcov = I(ndim)*2
 initchain = rand(MvNormal(initmean, initcov), nchain)
 
-# check if also runs with progress and DE-MCMC only
-chains, lprobs, pdist = RunDIME(LogProb, initchain, 10, progress=true, aimh_prob=0.)
-
 # check 4 real
 chains, lprobs, pdist = RunDIME(LogProb, initchain, niter, progress=false)
-
 sample = chains[end-Int(niter/4):end,:,1][:]
 
-tval = 1.7179419302883616
+tval = 1.6462218940770286
 @test isapprox(median(sample), tval)
+
+# check if also runs with progress and DE-MCMC only
+chains, lprobs, pdist = RunDIME(LogProb, initchain, 10, progress=true, aimh_prob=0.)
