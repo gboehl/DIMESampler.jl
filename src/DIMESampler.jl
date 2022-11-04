@@ -83,19 +83,21 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         cmean = exp(statelweight) * cmean + exp(lweight - newcumlweight) * nmean
         cumlweight = newcumlweight
 
-        # get AIMH proposal
+        # get AIMH proposals if any chain is drawn
         xchnge = rand(Uniform(0,1), nchain) .<= aimh_prob
 
-        # draw alternative candidates and calculate their proposal density
-        dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft)
+        if sum(xchnge) > 0
+            # draw alternative candidates and calculate their proposal density
+            dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft)
 
-        xcand = rand(dist, sum(xchnge))
-        lprop_old = logpdf(dist, x[:, xchnge])
-        lprop_new = logpdf(dist, xcand)
+            xcand = rand(dist, sum(xchnge))
+            lprop_old = logpdf(dist, x[:, xchnge])
+            lprop_new = logpdf(dist, xcand)
 
-        # update proposals and factors
-        q[:,xchnge] = xcand
-        factors[xchnge] = lprop_old - lprop_new
+            # update proposals and factors
+            q[:,xchnge] = xcand
+            factors[xchnge] = lprop_old - lprop_new
+        end
 
         # Metropolis-Hasings 
         newlprob = lprobFunc(q)
