@@ -176,3 +176,8 @@ If you are using this software in your research, please cite
     journal={Available at SSRN 4250395},
     year={2022}
     }
+
+Contributors
+------------
+
+Many thanks go to `DominikHe262 <https://github.com/DominikHe262>`_!
