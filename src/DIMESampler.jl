@@ -2,7 +2,7 @@
 
 """A sampler using adaptive differential evolution proposals.
 
-This is a standalone julia version of the `Adaptive Differential Ensemble MCMC sampler` as prosed in `Ensemble MCMC Sampling for DSGE Models <https://gregorboehl.com/live/ademc_boehl.pdf>`_.
+This is a standalone julia version of the `Adaptive Differential Ensemble MCMC sampler` as prosed in `Ensemble MCMC Sampling for Robust Bayesian Inference <https://gregorboehl.com/live/ademc_boehl.pdf>`_.
 """
 module DIMESampler
     
@@ -47,8 +47,11 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     lprob = lprobFunc(x)
 
     # preallocate
-    chains = zeros((niter, nchain, ndim))
-    lprobs = zeros((niter, nchain))
+    lprobs = Array{Float64,2}(undef, niter, nchain)
+    lprobs = fill!(lprobs, 0.0)
+
+    chains = Array{Float64,3}(undef, niter, nchain, ndim)
+    chains = fill!(chains, 0.0)
 
     # optional progress bar
     if progress
@@ -57,7 +60,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         iter = 1:niter
     end
 
-    for i in iter
+    @inbounds for i in iter
 
         # get differential evolution proposal
         # draw the indices of the complementary chains
