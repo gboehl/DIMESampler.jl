@@ -35,10 +35,13 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         g0 = gamma
     end
 
+    # fix that MvTDist does not accept positive demi-definite covariance matrices
+    fixPSD = Matrix(1e-16I, ndim, ndim)
+
     # initialize
     ccov = Matrix(1.0I, ndim, ndim)
     cmean = zeros(ndim)
-    dist = MvTDist(dft, cmean, ccov)
+    dist = MvTDist(dft, cmean, ccov + fixPSD)
     accepted = ones(nchain)
     cumlweight = -Inf
 
@@ -91,7 +94,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
 
         if sum(xchnge) > 0
             # draw alternative candidates and calculate their proposal density
-            dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft)
+            dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft + fixPSD)
 
             xcand = rand(dist, sum(xchnge))
             lprop_old = logpdf(dist, x[:, xchnge])
