@@ -11,7 +11,7 @@ using Distributions, ProgressBars, Printf, LinearAlgebra, StatsFuns
 export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF
 
 @doc raw"""
-    DIMESampler(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.05, nsamples_proposal_dist=nothing, df_proposal_dist::Int=10, progress::Bool=true)
+    DIMESampler(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.05, nsamples_proposal_dist=nothing, df_proposal_dist::Int=10, delta::Float64=.999, progress::Bool=true)
 
 # Arguments
 - `lprobFunc::Function`: the likelihood function to be sampled. Expected to be vectorized.
@@ -20,11 +20,13 @@ export RunDIME, CreateDIMETestFunc, DIMETestFuncMarginalPDF
 - `sigma::Float=1e-5`: the standard deviation of the Gaussian used to stretch the proposal vector.
 - `gamma::Float=nothing`: the mean stretch factor for the proposal vector. By default, it is ``2.38 / \sqrt{2\,\mathrm{ndim}}`` as recommended by `ter Braak (2006) <http://www.stat.columbia.edu/~gelman/stuff_for_blog/cajo.pdf>`_.
 - `aimh_prob::Float=0.1`: the probability to draw a AIMH proposal. 
+- `delta::Float=0.999`: the decay parameter for mean and covariance of the AIMH proposals.
 - `df_proposal_dist::Float=10`: the degrees of freedom of the multivariate t distribution used for AIMH proposals.
 """
-function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.1, df_proposal_dist::Int=10, progress::Bool=true)
+function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e-5, gamma=nothing, aimh_prob::Float64=0.1, df_proposal_dist::Int=10, delta::Float64=.999, progress::Bool=true)
 
     ndim, nchain = size(init)
+    isplit = nchain ÷ 2
 
     # get some default values
     dft = df_proposal_dist
@@ -48,6 +50,8 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     # calculate intial values
     x = copy(init)
     lprob = lprobFunc(x)
+    # split ensemble
+    xref, xcur = (@view x[:, 1:isplit+1]), (@view x[:, isplit+1:end])
 
     # preallocate
     lprobs = Array{Float64,2}(undef, niter, nchain)
@@ -65,20 +69,10 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
 
     @inbounds for i in iter
 
-        # get differential evolution proposal
-        # draw the indices of the complementary chains
-        i1 = collect(0:nchain-1) .+ rand(1:nchain-1, nchain)
-        i2 = collect(0:nchain-1) .+ rand(1:nchain-2, nchain)
-        i2[i2 .>= i1] .+= 1
-        # add small noise and calculate proposal
-        f = sigma * rand(Normal(0,1), (1,nchain))
-        q = x + g0 * (x[:,(i1 .% nchain) .+ 1] - x[:,(i2 .% nchain) .+ 1]) .+ f
-        factors = zeros(nchain)
-
+        # calculate stats for current ensemble
         # log weight of current ensemble
         lweight = logsumexp(lprobs) + log(sum(accepted)) - log(nchain)
 
-        # calculate stats for current ensemble
         ncov = cov(transpose(x))
         nmean = mean(x, dims=2)
 
@@ -87,32 +81,58 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         statelweight = cumlweight - newcumlweight
         ccov = exp(statelweight) * ccov + exp(lweight - newcumlweight) * ncov
         cmean = exp(statelweight) * cmean + exp(lweight - newcumlweight) * nmean
-        cumlweight = newcumlweight
+        cumlweight = newcumlweight + log(delta)
+        naccepted = 0
 
-        # get AIMH proposals if any chain is drawn
-        xchnge = rand(Uniform(0,1), nchain) .<= aimh_prob
+        # must iterate over current and reference ensemble
+        @inbounds for round2 in (false,true)
 
-        if sum(xchnge) > 0
-            # draw alternative candidates and calculate their proposal density
-            dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft + fixPSD)
+            # define current ensemble
+            if round2
+                xcur, xref = (@view x[:, 1:isplit+1]), (@view x[:, isplit+1:end])
+                lprobcur = @view lprob[1:isplit+1]
+            else
+                xref, xcur = (@view x[:, 1:isplit+1]), (@view x[:, isplit+1:end])
+                lprobcur = @view lprob[isplit+1:end]
+            end
+            cursize = size(xcur)[2]
+            refsize = nchain - cursize + 1
 
-            xcand = rand(dist, sum(xchnge))
-            lprop_old = logpdf(dist, x[:, xchnge])
-            lprop_new = logpdf(dist, xcand)
+            # get differential evolution proposal
+            # draw the indices of the complementary chains
+            i1 = collect(0:cursize-1) .+ rand(1:cursize-1, cursize)
+            i2 = collect(0:cursize-1) .+ rand(1:cursize-2, cursize)
+            i2[i2 .>= i1] .+= 1
+            # add small noise and calculate proposal
+            f = sigma * rand(Normal(0,1), (1,cursize))
+            q = xcur + g0 * (xref[:,(i1 .% refsize) .+ 1] - xref[:,(i2 .% refsize) .+ 1]) .+ f
+            factors = zeros(cursize)
 
-            # update proposals and factors
-            q[:,xchnge] = xcand
-            factors[xchnge] = lprop_old - lprop_new
+            # get AIMH proposals if any chain is drawn
+            xchnge = rand(Uniform(0,1), cursize) .<= aimh_prob
+
+            if sum(xchnge) > 0
+                # draw alternative candidates and calculate their proposal density
+                dist = MvTDist(dft, cmean[:], ccov*(dft - 2)/dft + fixPSD)
+
+                xcand = rand(dist, sum(xchnge))
+                lprop_old = logpdf(dist, xcur[:, xchnge])
+                lprop_new = logpdf(dist, xcand)
+
+                # update proposals and factors
+                q[:,xchnge] = xcand
+                factors[xchnge] = lprop_old - lprop_new
+            end
+
+            # Metropolis-Hasings 
+            newlprob = lprobFunc(q)
+            lnpdiff = factors + newlprob - lprobcur
+            accepted = lnpdiff .> log.(rand(Uniform(0,1), cursize))
+            naccepted += sum(accepted)
+            # update chains
+            xcur[:,accepted] = q[:,accepted]
+            lprobcur[accepted] = newlprob[accepted]
         end
-
-        # Metropolis-Hasings 
-        newlprob = lprobFunc(q)
-        lnpdiff = factors + newlprob - lprob
-        accepted = lnpdiff .> log.(rand(Uniform(0,1), nchain))
-        naccepted = sum(accepted)
-        # update chains
-        x[:,accepted] = q[:,accepted]
-        lprob[accepted] = newlprob[accepted]
 
         # store
         chains[i,:,:] = transpose(x)
