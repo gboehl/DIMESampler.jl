@@ -1,5 +1,5 @@
 DIMESampler.jl
-========
+==============
 
 .. image:: https://github.com/gboehl/DIMESampler.jl/workflows/Testing/badge.svg
     :target: https://github.com/gboehl/DIMESampler.jl/actions
