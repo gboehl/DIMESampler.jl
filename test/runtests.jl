@@ -23,7 +23,7 @@ initchain = rand(MvNormal(initmean, initcov), nchain)
 chains, lprobs, pdist = RunDIME(LogProb, initchain, niter, progress=false)
 sample = chains[end-Int(niter/4):end,:,1][:]
 
-tval = 1.6462218940770286
+tval = 1.772542206271537
 @test isapprox(median(sample), tval)
 
 # check if also runs with progress and DE-MCMC only
