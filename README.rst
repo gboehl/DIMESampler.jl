@@ -15,6 +15,8 @@ The sampler has a series of advantages over conventional samplers:
 #. DIME MCMC is **parallelizable**: many chains can run in parallel, and the necessary number of draws decreases almost one-to-one with the number of chains.
 #. DIME proposals are generated from an **endogenous and adaptive proposal distribution**, thereby providing close-to-optimal proposal distributions for black box target distributions without the need for manual fine-tuning.
     
+There is a nice `set of slides <https://gregorboehl.com/revealjs/emc>`_ on my website which explains the DIME principle.
+
 .. figure:: https://github.com/gboehl/DIMESampler.jl/blob/main/docs/dist.png?raw=true
   :width: 800
   :alt: Sample and target distribution
