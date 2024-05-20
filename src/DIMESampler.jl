@@ -85,10 +85,10 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         naccepted = 0
 
         # must iterate over current and reference ensemble
-        @inbounds for round2 in (false,true)
+        @inbounds for complementary_ensemble in (false,true)
 
             # define current ensemble
-            if round2
+            if complementary_ensemble
                 xcur, xref = (@view x[:, 1:isplit+1]), (@view x[:, isplit+1:end])
                 lprobcur = @view lprob[1:isplit+1]
             else
