@@ -50,8 +50,6 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     # calculate intial values
     x = copy(init)
     lprob = lprobFunc(x)
-    # split ensemble
-    xref, xcur = (@view x[:, 1:isplit+1]), (@view x[:, isplit+1:end])
 
     # preallocate
     lprobs = Array{Float64,2}(undef, niter, nchain)
