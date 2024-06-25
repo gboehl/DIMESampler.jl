@@ -37,7 +37,7 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
         g0 = gamma
     end
 
-    # fix that MvTDist does not accept positive demi-definite covariance matrices
+    # fix that MvTDist does not accept positive semi-definite covariance matrices
     fixPSD = Matrix(1e-16I, ndim, ndim)
 
     # initialize
@@ -50,6 +50,9 @@ function RunDIME(lprobFunc::Function, init::Array, niter::Int; sigma::Float64=1e
     # calculate intial values
     x = copy(init)
     lprob = lprobFunc(x)
+    if any(lprob .< -1e6) 
+        error("Density of at least one member of the initial ensemble is below -1e6")
+    end
 
     # preallocate
     lprobs = Array{Float64,2}(undef, niter, nchain)
