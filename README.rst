@@ -62,7 +62,7 @@ The core functionality is included in the function ``RunDIME``:
     chains, lprobs, propdist = RunDIME(LogProb, initchain, niter)
     ...
 
-The ``LogProb`` function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. 
+The ``LogProb`` function returning the log-density must be vectorized, i.e. able to evaluate inputs with shape ``[ndim, :]``. When using bounded priors it is recommended to use parameter transformations to maintain high acceptance rates.
 
 The ensemble can be evaluated in parallel, which is one of the central advantages of ensemble MCMC. To have ``LogProb`` evaluate its vectorized input in parallel you can e.g. use ``pmap`` from `Distributed <https://docs.julialang.org/en/v1/stdlib/Distributed/>`_
 
