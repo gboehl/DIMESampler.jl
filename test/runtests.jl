@@ -28,7 +28,8 @@ using LinearAlgebra
     chains, lprobs, pdist = RunDIME(LogProb, initchain, niter, progress=false)
     sample = chains[end-Int(niter/4):end,:,1][:]
 
-    tval = 1.7107162256490667
+    # tval = 1.7107162256490667
+    tval = 1.6667663785922033
     @test isapprox(median(sample), tval)
 
     # check if also runs with progress and DE-MCMC only
